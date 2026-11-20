@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "aws" {
-  region = "us-east-1"
+  region = "us-west-2"
 }
 
 ############################
@@ -272,12 +272,12 @@ resource "aws_eks_node_group" "node_group" {
   ]
   
     
-  instance_types = ["t3.medium"]
+  instance_types = ["m7i-flex.large"]
 
   scaling_config {
 
-    desired_size = 4
-    max_size     = 6
+    desired_size = 2
+    max_size     = 3
     min_size     = 1
   }
 
@@ -296,8 +296,8 @@ resource "aws_eks_node_group" "node_group" {
 
 
 resource "aws_instance" "eks" {
-    ami           = "ami-02dfbd4ff395f2a1b"
-    instance_type = "t2.medium"
+    ami           = "ami-09f6e62a9fe578f92"
+    instance_type = "m7i-flex.large"
     subnet_id     = aws_subnet.public1.id
     vpc_security_group_ids = [aws_security_group.allow_all.id]
     root_block_device {
