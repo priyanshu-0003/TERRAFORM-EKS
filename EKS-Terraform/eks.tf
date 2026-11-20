@@ -404,12 +404,5 @@ resource "aws_iam_role_policy_attachment" "ebs_csi_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
 }
 
-# ADD THIS NEW BLOCK
-resource "aws_eks_addon" "pod_identity_agent" {
-  cluster_name = aws_eks_cluster.eks.name
-  addon_name   = "eks-pod-identity-agent"
-
-  depends_on = [aws_eks_node_group.node_group]
-}
 
 
