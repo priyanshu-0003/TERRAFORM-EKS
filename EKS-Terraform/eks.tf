@@ -171,7 +171,7 @@ resource "aws_security_group" "allow_all" {
 
 resource "aws_iam_role" "cluster_role" {
 
-  name = "eks-cluster-role"
+  name = "eks-cluster-role-usw2"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -197,7 +197,7 @@ resource "aws_iam_role_policy_attachment" "cluster_policy" {
 
 resource "aws_iam_role" "worker_role" {
 
-  name = "eks-worker-role"
+name = "eks-worker-role-usw2"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -381,7 +381,7 @@ resource "aws_eks_addon" "pod_identity" {
 
 resource "aws_iam_role" "ebs_csi_role" {
 
-  name = "AmazonEKS_EBS_CSI_DriverRole"
+  name = "AmazonEKS_EBS_CSI_DriverRole-usw2"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -391,7 +391,7 @@ resource "aws_iam_role" "ebs_csi_role" {
         Service = "pods.eks.amazonaws.com"
       }
       Action = [
-        "sts:AssumeRole",            
+        "sts:AssumeRole",
         "sts:TagSession"
       ]
     }]
@@ -404,6 +404,14 @@ resource "aws_iam_role_policy_attachment" "ebs_csi_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
 }
 
+# ADD THIS NEW BLOCK
+resource "aws_eks_addon" "pod_identity_agent" {
+  cluster_name = aws_eks_cluster.eks.name
+  addon_name   = "eks-pod-identity-agent"
+
+  depends_on = [aws_eks_node_group.node_group]
+}
+
 resource "aws_eks_pod_identity_association" "ebs_csi" {
   cluster_name    = aws_eks_cluster.eks.name
   namespace       = "kube-system"
@@ -412,18 +420,7 @@ resource "aws_eks_pod_identity_association" "ebs_csi" {
   role_arn = aws_iam_role.ebs_csi_role.arn
 
   depends_on = [
-    aws_iam_role_policy_attachment.ebs_csi_policy
-  ]
-}
-
-resource "aws_eks_addon" "ebs_csi" {
-
-  cluster_name = aws_eks_cluster.eks.name
-  addon_name   = "aws-ebs-csi-driver"
-  resolve_conflicts_on_update = "OVERWRITE"
-
-  depends_on = [
-    aws_eks_node_group.node_group,
-    aws_eks_pod_identity_association.ebs_csi
+    aws_iam_role_policy_attachment.ebs_csi_policy,
+    aws_eks_addon.pod_identity_agent      # <- add this line
   ]
 }
