@@ -368,17 +368,14 @@ resource "aws_eks_addon" "kube_proxy" {
   depends_on = [aws_eks_node_group.node_group]
 }
 
-resource "aws_eks_pod_identity_association" "ebs_csi" {
-  cluster_name    = aws_eks_cluster.eks.name
-  namespace       = "kube-system"
-  service_account = "ebs-csi-controller-sa"
+resource "aws_eks_addon" "pod_identity" {
 
-  role_arn = aws_iam_role.ebs_csi_role.arn
+  cluster_name = aws_eks_cluster.eks.name
+  addon_name   = "eks-pod-identity-agent"
 
-  depends_on = [
-    aws_iam_role_policy_attachment.ebs_csi_policy,
-    aws_eks_addon.pod_identity
-  ]
+  resolve_conflicts_on_update = "OVERWRITE"
+
+  depends_on = [aws_eks_node_group.node_group]
 }
 
 
