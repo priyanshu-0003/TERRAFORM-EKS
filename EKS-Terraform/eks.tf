@@ -424,6 +424,6 @@ resource "aws_eks_pod_identity_association" "ebs_csi" {
 
   depends_on = [
     aws_iam_role_policy_attachment.ebs_csi_policy,
-    aws_eks_addon.pod_identity_agent      # <- add this line
+    aws_eks_addon.pod_identity
   ]
 }
