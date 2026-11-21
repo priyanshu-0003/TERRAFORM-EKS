@@ -78,13 +78,15 @@ resource "aws_subnet" "private2" {
 ############################
 
 resource "aws_eip" "nat" {
-  domain = "vpc"
+  domain     = "vpc"
+  depends_on = [aws_internet_gateway.igw]
 }
 
 resource "aws_nat_gateway" "nat" {
 
   allocation_id = aws_eip.nat.id
   subnet_id     = aws_subnet.public1.id
+  depends_on    = [aws_internet_gateway.igw]
 }
 
 ############################
@@ -315,7 +317,7 @@ resource "aws_instance" "eks" {
                 yum update -y
 
                 # ----------------------------- Install kubectl -----------------------------
-                curl -o /tmp/kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl
+                curl -L -o /tmp/kubectl "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
                 chmod +x /tmp/kubectl
                 mv /tmp/kubectl /usr/local/bin/kubectl
 
