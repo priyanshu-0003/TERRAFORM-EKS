@@ -298,7 +298,7 @@ resource "aws_eks_node_group" "node_group" {
 
 
 resource "aws_instance" "eks" {
-    ami           = "ami-09f6e62a9fe578f92"
+    ami           = "ami-09f6e62a9fe578f92
     instance_type = "m7i-flex.large"
     subnet_id     = aws_subnet.public1.id
     vpc_security_group_ids = [aws_security_group.allow_all.id]
