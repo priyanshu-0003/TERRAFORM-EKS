@@ -5,6 +5,13 @@ terraform {
       version = "~> 5.0"
     }
   }
+
+  backend "s3" {
+    bucket       = "naresh-tfstate-542129211681"
+    key          = "eks/terraform.tfstate"
+    region       = "us-west-2"
+    use_lockfile = true
+  }
 }
 
 provider "aws" {
