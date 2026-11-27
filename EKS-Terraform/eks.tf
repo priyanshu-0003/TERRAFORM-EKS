@@ -5,18 +5,12 @@ terraform {
       version = "~> 5.0"
     }
   }
-
-  backend "s3" {
-    bucket       = "naresh-tfstate-542129211681"
-    key          = "eks/terraform.tfstate"
-    region       = "us-west-2"
-    use_lockfile = true
-  }
 }
 
 provider "aws" {
   region = "us-west-2"
 }
+
 
 ############################
 # VARIABLES
@@ -281,8 +275,7 @@ resource "aws_eks_node_group" "node_group" {
   ]
   
     
-  instance_types = ["m7i-flex.large"]
-
+  instance_types = ["t3.medium"]
   scaling_config {
 
     desired_size = 2
@@ -306,7 +299,7 @@ resource "aws_eks_node_group" "node_group" {
 
 resource "aws_instance" "eks" {
     ami           = "ami-09f6e62a9fe578f92"
-    instance_type = "m7i-flex.large"
+    instance_type = "t3.medium"
     subnet_id     = aws_subnet.public1.id
     vpc_security_group_ids = [aws_security_group.allow_all.id]
     root_block_device {
