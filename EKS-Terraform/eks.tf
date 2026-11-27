@@ -249,7 +249,8 @@ resource "aws_eks_cluster" "eks" {
       aws_subnet.private2.id
     ]
 
-    endpoint_public_access = true
+    endpoint_public_access  = true
+    endpoint_private_access = true
   }
 
   depends_on = [
@@ -286,7 +287,10 @@ resource "aws_eks_node_group" "node_group" {
   depends_on = [
     aws_iam_role_policy_attachment.worker_node,
     aws_iam_role_policy_attachment.cni,
-    aws_iam_role_policy_attachment.ecr
+    aws_iam_role_policy_attachment.ecr,
+    aws_nat_gateway.nat,
+    aws_route_table_association.priv1,
+    aws_route_table_association.priv2
   ]
   tags = {
     Name        = "eks-node"
